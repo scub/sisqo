@@ -6,9 +6,7 @@ Sisqo is a library for automating the management of Cisco devices via SSH.
 
 #### Features
 
- * Runs on any UNIX-style platform that has vty support, with no dependencies on OpenSSH or SSH agents
- * Emulates OpenSSH-style `ProxyCommand` support, allowing the library to traverse jumpboxes
- * Supports SSH pubkey authentication with no dependency on the user's `.ssh` profile, complimenting the `ProxyCommand` feature by attempting both password-based and pubkey-based authentication at each hop
+ * Runs on any platform that has the OpenSSH client
  * Complete support for VT100 series terminal emulation, guaranteeing that what you see on the command line will also be what you receive from this library
  * Automatically handles Cisco-style "more" pagination and prompt matching, allowing for seamless `read()`/`write()` semantics regardless of the target device's terminal settings
  * Provides special API support for `enable` authorization
@@ -79,7 +77,7 @@ exit( 0 )
 
 ### class _SSH_
 
-*_Note_: this class must be used as a context manager (using a "with" statement)*
+*_Note_: this class can be used as a context manager (using a "with" statement)*
 
  * **constructor ( _host_: str, _port_: int?, _proxyCommand_: str? )**
 
@@ -91,11 +89,23 @@ exit( 0 )
 
  * **readonly property _proxyCommand_: str | None** – SSH command used to connect to the jumpbox
 
+ * **property _promptRegex_: str** – Regular Expression used to match shell prompts
+
+ * **property _moreRegex_: str** – Regular Expression used to match "more" pagination prompts
+
+ * **method _connect_ ( )**
+
+   Opens an SSH connection to the target device.
+
+ * **method _disconnect_ ( )**
+
+   Closes the SSH connection with the target device.
+
  * **method _authenticate_ ( _username_: str, _password_: str?, _privateKeyFile_: str?, _privateKeyPassword_: str? ): bool**
 
-   Initiates an SSH connection to the target device, trying the specified private key and proxying through intermediate jumpboxes if necessary.
+   Authenticates with the target device, trying the specified private key and proxying through intermediate jumpboxes if necessary.
 
- * **method _read_ ( _timeout_: int?, _promptRegex_: str?, _moreRegex_: str?, _stripPrompt_: bool? ): str**
+ * **method _read_ ( _timeout_: int?, _stripPrompt_: bool? ): str**
 
    Reads from the target device up to the next prompt, with special handling for Cisco-style pagination. If a prompt cannot be matched in the output, the read operation returns after `timeout` seconds. The `stripPrompt` argument can be used to control whether or not the text of the prompt is returned as part of the read operation.
 

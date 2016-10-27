@@ -1,4 +1,4 @@
-.py[oc]
+*.py[oc]
 dist
 *.egg-info
 
