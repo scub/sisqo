@@ -167,7 +167,7 @@ class SSH:
 
             self._log.info('Creating a vt100 512x64 shell')
 
-            self._shell = self._client.invoke_shell(width=512, height=64)
+            self._shell = self._client.invoke_shell(width=512, height=256)
 
             self._shell.set_combine_stderr(True)
 
